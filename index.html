@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2e6b4f">
+<meta name="description" content="ふるさと納税の控除上限の目安と「あといくら寄付できるか」を管理。ワンストップ特例のチェック付き。データは端末内のみに保存。">
+<title>ふるさと納税マネージャー</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="app">
+    <h1>ふるさと納税マネージャー</h1>
+    <nav class="year-nav" aria-label="年の切り替え">
+      <button id="prevYear" aria-label="前の年">◀</button>
+      <span class="year" id="yearLabel">2026年</span>
+      <button id="nextYear" aria-label="次の年">▶</button>
+    </nav>
+  </header>
+
+  <section class="card hero" id="heroCard">
+    <div class="label" id="heroLabel">のこり寄付枠（目安）</div>
+    <div class="big" id="heroAmount">¥0</div>
+    <div class="bar"><div id="heroBar" style="width:0%"></div></div>
+    <div class="caption" id="heroCaption"></div>
+    <div class="cta" id="heroCta" hidden>まず下の「上限の目安」を設定してください</div>
+  </section>
+
+  <section class="card">
+    <details id="limitDetails">
+      <summary>上限の目安を設定</summary>
+      <label class="fld" for="income">年収（額面・万円）</label>
+      <input type="number" id="income" inputmode="numeric" min="0" max="99999" placeholder="例: 500">
+      <label class="fld" for="family">家族構成</label>
+      <select id="family">
+        <option value="single">独身又は共働き</option>
+        <option value="couple">夫婦（配偶者に収入なし）</option>
+        <option value="dw1hs">共働き＋子1人（高校生）</option>
+        <option value="dw1univ">共働き＋子1人（大学生）</option>
+        <option value="cp1hs">夫婦＋子1人（高校生）</option>
+        <option value="dw2">共働き＋子2人（大学生＋高校生）</option>
+        <option value="cp2">夫婦＋子2人（大学生＋高校生）</option>
+      </select>
+      <button class="primary" id="calcBtn">目安を計算する</button>
+      <div id="calcResult" hidden></div>
+      <label class="fld" for="manualLimit">上限を直接入力（円・任意）</label>
+      <input type="number" id="manualLimit" inputmode="numeric" min="0" placeholder="ポータルの詳細シミュ結果があれば">
+      <button class="ghost" id="manualBtn" style="margin-top:10px; width:100%;">この金額を上限にする</button>
+      <p class="note">目安は総務省の早見表（住宅ローン控除・医療費控除なしの給与所得者、社会保険料15%仮定）に基づく概算です。税制改正や個別の控除状況で変わるため、正確な金額は各ポータルの詳細シミュレーションやお住まいの自治体でご確認ください。</p>
+    </details>
+  </section>
+
+  <section class="card">
+    <h2>寄付を記録</h2>
+    <div class="row2">
+      <div>
+        <label class="fld" for="dDate">寄付日</label>
+        <input type="date" id="dDate">
+      </div>
+      <div>
+        <label class="fld" for="dAmount">金額（円）</label>
+        <input type="number" id="dAmount" inputmode="numeric" min="1" placeholder="10000">
+      </div>
+    </div>
+    <label class="fld" for="dCity">自治体名</label>
+    <input type="text" id="dCity" placeholder="例: 北海道紋別市" maxlength="40">
+    <label class="fld" for="dItem">返礼品メモ（任意）</label>
+    <input type="text" id="dItem" placeholder="例: ホタテ1kg" maxlength="60">
+    <div class="check">
+      <input type="checkbox" id="dOnestop">
+      <label for="dOnestop">ワンストップ申請書を提出済み</label>
+    </div>
+    <button class="primary" id="addBtn">寄付を追加</button>
+  </section>
+
+  <section class="card">
+    <h2 id="listTitle">寄付一覧</h2>
+    <ul class="donations" id="donationList"></ul>
+    <div class="empty" id="listEmpty">まだ寄付の記録がありません</div>
+  </section>
+
+  <section class="card">
+    <h2>ワンストップ特例チェック</h2>
+    <div id="onestopStatus"></div>
+    <div class="kv"><span class="k">寄付先の自治体数</span><span id="cityCount">0 / 5</span></div>
+    <div class="kv"><span class="k">申請書 未提出の寄付</span><span id="unsentCount">0件</span></div>
+    <div class="kv"><span class="k">申請書の提出期限</span><span id="deadline">-</span></div>
+    <p class="note">ワンストップ特例は「寄付先が年間5自治体以内」かつ「確定申告が不要な給与所得者」が対象です。申請書は寄付のたびに1枚必要で、翌年1月10日必着。確定申告をするとワンストップ申請は無効になり、寄附金控除として申告し直しが必要です。</p>
+  </section>
+
+  <section class="card">
+    <details>
+      <summary>データ管理（バックアップ）</summary>
+      <label class="fld" for="exportArea">エクスポート（全文をコピーして保存）</label>
+      <textarea id="exportArea" readonly></textarea>
+      <button class="ghost" id="exportBtn" style="margin-top:10px; width:100%;">エクスポート文字列を作成</button>
+      <label class="fld" for="importArea">インポート（エクスポート文字列を貼り付け）</label>
+      <textarea id="importArea" placeholder='{"version":1,...}'></textarea>
+      <button class="ghost" id="importBtn" style="margin-top:10px; width:100%;">インポートする</button>
+      <button class="ghost danger" id="wipeBtn" style="margin-top:10px; width:100%;">全データを削除</button>
+      <p class="note">データはこの端末のブラウザ内（localStorage）にのみ保存され、外部には一切送信されません。機種変更前には必ずエクスポートしてください。</p>
+    </details>
+  </section>
+
+  <footer>
+    <p>【免責】本アプリの上限額はあくまで<strong>目安</strong>であり、税額を保証するものではありません。個別の税務相談には応じられません。正確な情報は<a href="https://www.soumu.go.jp/main_sosiki/jichi_zeisei/czaisei/czaisei_seido/furusato/" target="_blank" rel="noopener">総務省 ふるさと納税ポータルサイト</a>、または税理士・お住まいの自治体にご確認ください。</p>
+  </footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="./data.js"></script>
+<script src="./app.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js").catch(function(){ /* SW未対応環境でも動作継続 */ });
+}
+</script>
+</body>
+</html>
