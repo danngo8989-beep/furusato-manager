@@ -34,7 +34,8 @@
     <details id="limitDetails">
       <summary>上限の目安を設定</summary>
       <label class="fld" for="income">年収（額面・万円）</label>
-      <input type="number" id="income" inputmode="numeric" min="0" max="99999" placeholder="例: 500">
+      <input type="number" id="income" inputmode="numeric" min="0" max="99999" placeholder="例: 500" aria-describedby="incomeNote">
+      <p class="note" id="incomeNote">🔒 年収は上限の目安を計算するためだけに使い、この端末内にのみ保存されます。外部へは一切送信されません。（<a href="./privacy.html">プライバシーポリシー</a>）</p>
       <label class="fld" for="family">家族構成</label>
       <select id="family">
         <option value="single">独身又は共働き</option>
@@ -108,6 +109,7 @@
 
   <footer>
     <p>【免責】本アプリの上限額はあくまで<strong>目安</strong>であり、税額を保証するものではありません。個別の税務相談には応じられません。正確な情報は<a href="https://www.soumu.go.jp/main_sosiki/jichi_zeisei/czaisei/czaisei_seido/furusato/" target="_blank" rel="noopener">総務省 ふるさと納税ポータルサイト</a>、または税理士・お住まいの自治体にご確認ください。</p>
+    <p>本アプリは個人が開発した無料ツールです。氏名・口座・カード番号などの入力を求めることはありません。<a href="./privacy.html">プライバシーポリシー</a>　|　<a href="https://github.com/danngo8989-beep/furusato-manager/issues" target="_blank" rel="noopener">お問い合わせ</a></p>
   </footer>
 </div>
 <div class="toast" id="toast" role="status"></div>

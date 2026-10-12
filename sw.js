@@ -1,9 +1,10 @@
 /* sw.js — ネットワーク優先・オフライン時キャッシュ（キャッシュ優先は更新事故のため禁止） */
-const VERSION = "v1.0.0";
+const VERSION = "v1.0.1";
 const CACHE = "furusato-" + VERSION;
 const ASSETS = [
   "./",
   "./index.html",
+  "./privacy.html",
   "./style.css",
   "./data.js",
   "./app.js",
